@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-typecheck:
+    runs-on: ubuntu-latest
+    env:
+      # Dummy values that pass Phase 1e's Zod schemas.
+      # Real secrets are never needed for lint/type-check/build.
+      SUPABASE_SERVICE_ROLE_KEY: ci_dummy_service_role_key
+      UPSTASH_REDIS_REST_URL: https://dummy.upstash.io
+      UPSTASH_REDIS_REST_TOKEN: ci_dummy_redis_token
+      RESEND_API_KEY: re_dummy_value_for_ci
+      SENTRY_AUTH_TOKEN: ci_dummy_sentry_token
+      NEXT_PUBLIC_SUPABASE_URL: https://dummy.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ci_dummy_anon_key
+      NEXT_PUBLIC_SENTRY_DSN: https://dummy@sentry.io/1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - run: npm run type-check
+
+      - run: npm run build

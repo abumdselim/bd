@@ -1,0 +1,8 @@
+node_modules
+.next
+out
+dist
+*.min.js
+package-lock.json
+bun.lock
+.next/types
