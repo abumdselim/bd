@@ -362,3 +362,18 @@ Stage Summary:
 - Phase 2h deliverables created — Section G self-escalation update path closed at DB level
 - Combined with Phase 2b (creation path locked), there is now NO path for role self-escalation
 - Role-lock mechanism: RLS WITH CHECK rejects (0 rows), not silently overwrites
+
+---
+Task ID: 19
+Agent: Main Agent
+Task: Phase 2i — RLS: Media, Audit Logs, Categories, Tags, Article Tags
+
+Work Log:
+- Created `supabase/migrations/0009_rls_remaining.sql`: 12 policies across 5 tables (media 3, audit_logs 1, categories 2, tags 4, article_tags 2)
+- Created `docs/adr/0020-remaining-rls-matrix.md`: per-table access matrix, audit_logs no-INSERT rationale, article_tags cascade mechanism
+- Verified: zero audit_logs INSERT policies, article_tags SELECT uses EXISTS subquery (not USING true), categories uses FOR ALL, 12 total policies
+
+Stage Summary:
+- Phase 2i deliverables created — Part 2 RLS is now fully complete across ALL tables
+- Zero tables remain in deny-by-default-with-no-policies state
+- Total RLS policies across Part 2: 8 (articles) + 5 (profiles) + 12 (remaining) = 25 policies
