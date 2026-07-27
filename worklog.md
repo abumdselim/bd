@@ -134,3 +134,27 @@ Stage Summary:
 - T2 structural mitigation: admin client is grep-auditable by distinct name and file isolation
 - Build still 87kB (Supabase code tree-shaken since nothing calls it yet)
 - Phases 1a through 1f pushed to https://github.com/abumdselim/bd
+
+---
+Task ID: 7
+Agent: Main Agent
+Task: Phase 1g — Security Headers
+
+Work Log:
+- Updated next.config.mjs with async headers() function applying to all routes via source: "/(.*)"
+- CSP: 9 directives (default-src, script-src, style-src, img-src, font-src, connect-src, frame-ancestors, base-uri, form-action, object-src)
+- No unsafe-eval in script-src (intentionally absent per spec)
+- wss://*.supabase.co present in connect-src (required for Phase 4h/8g Realtime features)
+- 4 additional security headers: X-Content-Type-Options nosniff, X-Frame-Options DENY, Referrer-Policy strict-origin-when-cross-origin, Permissions-Policy camera/mic/geo disabled
+- Created docs/adr/0008-content-security-policy.md: directive-by-directive rationale table, future extension table (Phase 8c FCM, 9b AdSense), Cloudflare defense-in-depth notes, A/A+ target grade
+- Verified via production server (port 3001): all 5 headers confirmed in HTTP response with correct values
+- T7 (clickjacking) mitigated: frame-ancestors 'none' + X-Frame-Options DENY
+- T1 (content injection) mitigated: CSP script-src restriction + object-src 'none'
+- Committed as `2067986` and pushed to GitHub
+
+Stage Summary:
+- Phase 1g deliverables committed and pushed to `main`
+- Full CSP and security header set ready — later phases extend via ADR 0008
+- securityheaders.com manual verification deferred to deployed preview URL
+- Cloudflare Transform Rules must mirror these headers (external config, documented in ADR 0008)
+- Phases 1a through 1g pushed to https://github.com/abumdselim/bd
