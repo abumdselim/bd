@@ -85,3 +85,29 @@ Stage Summary:
 - Scaffold is the performance baseline: 87kB first load JS, all 3 routes statically generated
 - Route group separation ready for Phase 3e middleware gating
 - Phases 1a through 1d pushed to https://github.com/abumdselim/bd
+
+---
+Task ID: 5
+Agent: Main Agent
+Task: Phase 1e — T3 Env Build-Time Validation
+
+Work Log:
+- Installed @t3-oss/env-nextjs@0.10.1 (pinned exact version)
+- Created env.mjs at project root with: 4 server vars (SUPABASE_SERVICE_ROLE_KEY, UPSTASH_REDIS_REST_TOKEN, RESEND_API_KEY, SENTRY_AUTH_TOKEN), 3 client vars (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, NEXT_PUBLIC_SENTRY_DSN), all required (no .optional())
+- RESEND_API_KEY validated with z.string().startsWith("re_")
+- Renamed next.config.js → next.config.mjs (ESM required for import syntax)
+- Updated .env.example to match T3 Env schema with server/client scope documentation
+- Created docs/adr/0007-env-validation.md: rule against direct process.env access, table of all vars with scope/schema/owning phase
+- Verified all 5 checklist items:
+  1. Build fails naming RESEND_API_KEY when set to empty string
+  2. Build succeeds (exit 0) with all 7 valid placeholders
+  3. Zero direct process.env outside env.mjs
+  4. .env is gitignored
+  5. Zero server-only secrets in .next/static/ client bundle
+- Committed as `5020e1b` and pushed to GitHub
+
+Stage Summary:
+- Phase 1e deliverables committed and pushed to `main`
+- Build-time validation is the gatekeeper: no deployment ships with missing/malformed secrets
+- Note: GitHub Dependabot flagged 36 vulnerabilities in pinned deps — T10 (Dependency Vulnerabilities) owner phase, to be addressed in CI/CD setup
+- Phases 1a through 1e pushed to https://github.com/abumdselim/bd
