@@ -204,3 +204,28 @@ Stage Summary:
 - 429 response shape is the contract for all future API errors (Section E)
 - Middleware matches /api/auth/* and /api/public/* — no impact on public page routes
 - Phases 1a through 1i pushed to https://github.com/abumdselim/bd
+
+---
+Task ID: 10
+Agent: Main Agent
+Task: Phase 1j — Git + CI
+
+Work Log:
+- Created .github/workflows/ci.yml: lint + type-check + build on PRs to main, dummy env vars (RESEND_API_KEY=re_ prefix, valid https:// URLs for .url() schemas), npm ci for lockfile-exact installs
+- Updated package.json: lint now uses --max-warnings=0, added type-check (tsc --noEmit), format (prettier --write), prepare (husky) scripts
+- Created .eslintrc.json extending next/core-web-vitals
+- Installed husky@9.1.6, lint-staged@15.2.10, prettier@3.3.3 as dev deps (pinned)
+- Created .husky/pre-commit (Husky v9 file-based, executable): runs npx lint-staged
+- Created .lintstagedrc.json: eslint --fix + prettier --write on .ts/.tsx, prettier --write on .json/.md
+- Created .prettierignore: node_modules, .next, dist, lock files
+- Created docs/adr/0011-branch-protection.md: 7-rule branch protection table, CI steps, local hooks, Vercel deployment config
+- Verified: lint (0 warnings), type-check (0 errors), build (exit 0) — all pass with CI dummy env vars
+- All 7 checks passed: re_ prefix in CI, --max-warnings=0, prepare script, Husky v9 file-based, no .huskyrc, lint-staged config, npm ci
+- Committed as c634637 and pushed to GitHub
+
+Stage Summary:
+- Phase 1j deliverables committed and pushed to main
+- Part 1 complete: Phases 1a through 1j all pushed to https://github.com/abumdselim/bd
+- No commit reaches main without passing lint + type-check + build
+- Branch protection must be configured manually in GitHub repo settings (documented in ADR 0011)
+- T10 indirect support: npm ci enforces lockfile-exact deps, preventing supply-chain drift
