@@ -229,3 +229,20 @@ Stage Summary:
 - No commit reaches main without passing lint + type-check + build
 - Branch protection must be configured manually in GitHub repo settings (documented in ADR 0011)
 - T10 indirect support: npm ci enforces lockfile-exact deps, preventing supply-chain drift
+
+---
+Task ID: 11
+Agent: Main Agent
+Task: Phase 2a — Articles Table (Supabase Migration)
+
+Work Log:
+- Created `supabase/migrations/0001_articles.sql`: article_status enum (5 values), articles table (26 columns), 3 CHECK constraints (breaking_requires_ticker, rejected_requires_reason, scheduled_requires_time), 5 indexes (status, category, author, published_at partial, slug), set_updated_at() trigger, RLS enabled with zero policies
+- Created `docs/adr/0012-articles-schema.md`: column-by-column rationale table, JSONB body decision, deny-by-default RLS rationale, 5-index coverage map, Bangla/Unicode handling note
+- Verified: no RLS policies in migration file, body is jsonb (not text), no pgcrypto/CREATE EXTENSION, no stub table definitions for profiles/categories/media
+- Note: migration depends on profiles (2b), categories (2c), media (2e) — deploy order interleaved by filename numbering
+
+Stage Summary:
+- Phase 2a deliverables created (not yet committed/pushed — awaiting dependent phases 2b/2c/2e)
+- articles table schema is locked: 26 columns, 3 constraints, 5 indexes, RLS deny-by-default
+- body is JSONB (Tiptap native format) — contractual for Phase 4c editor and 6c renderer
+- article_status enum (draft/pending/published/rejected/scheduled) — contractual for all editorial workflow phases
