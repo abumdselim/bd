@@ -111,3 +111,26 @@ Stage Summary:
 - Build-time validation is the gatekeeper: no deployment ships with missing/malformed secrets
 - Note: GitHub Dependabot flagged 36 vulnerabilities in pinned deps — T10 (Dependency Vulnerabilities) owner phase, to be addressed in CI/CD setup
 - Phases 1a through 1e pushed to https://github.com/abumdselim/bd
+
+---
+Task ID: 6
+Agent: Main Agent
+Task: Phase 1f — Supabase Client Architecture
+
+Work Log:
+- Installed @supabase/ssr@0.5.1 and @supabase/supabase-js@2.45.1 (pinned exact versions)
+- Created lib/supabase/server.ts: Server Component client with createServerClient, cookie-reading via next/headers, try/catch on setAll (Server Components can't set cookies)
+- Created lib/supabase/client.ts: Browser client with createBrowserClient, anon key only, never touches service-role
+- Created lib/supabase/middleware.ts: updateSession() function for middleware session refresh, reusable by Phase 3e
+- Created lib/supabase/admin.ts: createAdminClient() using service-role key, DANGER file-level comment, auth: { autoRefreshToken: false, persistSession: false }
+- Created types/database.types.ts: Placeholder empty Database type
+- Added db:types script to package.json
+- Verified all 5 checklist items: 4 files exist, admin unused elsewhere, no deprecated auth-helpers, db:types script present, DANGER comment, no process.env, build exits 0
+- Committed as `71a7454` and pushed to GitHub
+
+Stage Summary:
+- Phase 1f deliverables committed and pushed to `main`
+- Three correctly-scoped clients + one admin client with explicit danger boundary
+- T2 structural mitigation: admin client is grep-auditable by distinct name and file isolation
+- Build still 87kB (Supabase code tree-shaken since nothing calls it yet)
+- Phases 1a through 1f pushed to https://github.com/abumdselim/bd
