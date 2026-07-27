@@ -246,3 +246,19 @@ Stage Summary:
 - articles table schema is locked: 26 columns, 3 constraints, 5 indexes, RLS deny-by-default
 - body is JSONB (Tiptap native format) — contractual for Phase 4c editor and 6c renderer
 - article_status enum (draft/pending/published/rejected/scheduled) — contractual for all editorial workflow phases
+
+---
+Task ID: 12
+Agent: Main Agent
+Task: Phase 2b — Profiles Table (Supabase Migration)
+
+Work Log:
+- Created `supabase/migrations/0002_profiles.sql`: user_role enum (4 values: contributor, journalist, editor, super_admin), profiles table (10 columns, PK references auth.users ON DELETE CASCADE), SECURITY DEFINER handle_new_user() trigger (role hardcoded to 'contributor', username from UUID prefix not email), RLS enabled with zero policies
+- Created `docs/adr/0013-role-enum.md`: 4-role access table, journalist-is-never-signup-default rationale, SECURITY DEFINER justification, username generation rationale, cross-reference to Section G
+- Critical security verification: confirmed handle_new_user() reads only raw_user_meta_data->>'full_name' (never ->>'role'), SECURITY DEFINER present, username uses substr(NEW.id::text,1,8) not NEW.email
+
+Stage Summary:
+- Phase 2b deliverables created
+- profiles table: 10 columns, auto-create on signup, role always 'contributor'
+- No foreign keys into other Part 2 tables — can deploy independently of 2c/2e (depends only on set_updated_at() from 0001)
+- Self-promotion from signup is structurally impossible — hardcoded role in SECURITY DEFINER function
