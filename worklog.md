@@ -279,3 +279,19 @@ Stage Summary:
 - categories table: self-referencing, 9 seeded top-level rows, RLS deny-by-default
 - No foreign keys into other Part 2 tables — can deploy independently of 2a/2b/2e
 - Post-launch category additions require an ADR (deliberate friction against taxonomy bloat)
+
+---
+Task ID: 14
+Agent: Main Agent
+Task: Phase 2d — Tags + Article Tags (Supabase Migration)
+
+Work Log:
+- Created `supabase/migrations/0004_tags.sql`: tags table (5 columns, usage_count denormalized), article_tags join table (composite PK on article_id+tag_id, ON DELETE CASCADE on both FKs), update_tag_usage_count() trigger (GREATEST floor on delete, FOR EACH ROW), RLS enabled with zero policies on both tables
+- Created `docs/adr/0015-tag-denormalization.md`: read-heavy vs write tradeoff analysis, trigger design rationale, composite PK rationale, reconciliation query note
+- Verified: composite PK (no surrogate id), GREATEST(usage_count - 1, 0) floor, FOR EACH ROW (not FOR EACH STATEMENT), CASCADE on both FKs, zero RLS policies
+
+Stage Summary:
+- Phase 2d deliverables created
+- Denormalized usage_count avoids COUNT(*) aggregate on every tag-page read
+- Composite PK prevents duplicate tag-attachments without extra unique constraint
+- Depends on articles (2a) — must deploy after 0001_articles.sql
