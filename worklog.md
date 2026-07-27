@@ -181,3 +181,26 @@ Stage Summary:
 - T6 mitigation active at edge before any real admin credentials exist
 - WAF rules documented for manual Cloudflare dashboard configuration by developer
 - Phases 1a through 1h pushed to https://github.com/abumdselim/bd
+
+---
+Task ID: 9
+Agent: Main Agent
+Task: Phase 1i — Upstash Rate Limiting Middleware
+
+Work Log:
+- Installed @upstash/ratelimit@2.0.1 and @upstash/redis@1.34.3 (pinned)
+- Added UPSTASH_REDIS_REST_URL to env.mjs (z.string().url()) and .env.example (Phase 1e deferred it)
+- Created lib/rate-limit.ts: 3 sliding-window policies with distinct Redis key prefixes (rl:login, rl:public, rl:submit)
+- Created lib/api-error.ts: ApiError interface, RateLimitErrorResponse with retryAfter, rateLimitError() factory
+- Created middleware.ts: root middleware with x-forwarded-for IP extraction (127.0.0.1 fallback), 429 JSON response with Retry-After header, config.matcher scoped to /api/auth/* and /api/public/*
+- Created docs/adr/0010-rate-limit-policy.md: per-route limits table, Upstash free tier budget projection (70% at 3K daily requests), extension procedure
+- Fixed literal \n in comment that caused `response` variable to be inside comment text
+- Verified: slidingWindow (not fixedWindow), distinct prefixes, Retry-After, no process.env, no fixedWindow, build exits 0 (middleware: 91kB server-only)
+- Committed as `a7ec5b0` and pushed to GitHub
+
+Stage Summary:
+- Phase 1i deliverables committed and pushed to `main`
+- T3 (credential stuffing) and T5 (scraper quota) mitigated at application layer
+- 429 response shape is the contract for all future API errors (Section E)
+- Middleware matches /api/auth/* and /api/public/* — no impact on public page routes
+- Phases 1a through 1i pushed to https://github.com/abumdselim/bd
