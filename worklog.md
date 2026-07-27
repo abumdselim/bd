@@ -262,3 +262,20 @@ Stage Summary:
 - profiles table: 10 columns, auto-create on signup, role always 'contributor'
 - No foreign keys into other Part 2 tables — can deploy independently of 2c/2e (depends only on set_updated_at() from 0001)
 - Self-promotion from signup is structurally impossible — hardcoded role in SECURITY DEFINER function
+
+---
+Task ID: 13
+Agent: Main Agent
+Task: Phase 2c — Categories + Subcategories (Supabase Migration)
+
+Work Log:
+- Created `supabase/migrations/0003_categories.sql`: self-referencing categories table (6 columns), no_self_parent CHECK constraint, 2 indexes (parent, position), 9 seed rows with Bangla names
+- Created `docs/adr/0014-category-taxonomy.md`: 9-category table with Bangla/English gloss, self-referencing rationale, no-icon decision, post-launch ADR-required addition process
+- Character-by-character Bangla verification: all 9 names match spec exactly (রাজনীতি, অর্থনীতি, আন্তর্জাতিক, খেলাধুলা, প্রযুক্তি, বিনোদন, শিক্ষা, স্বাস্থ্য, চট্টগ্রাম)
+- Verified: zero RLS policies, no subcategory seeds, no icon/image columns, slugs in exact constitution order
+
+Stage Summary:
+- Phase 2c deliverables created
+- categories table: self-referencing, 9 seeded top-level rows, RLS deny-by-default
+- No foreign keys into other Part 2 tables — can deploy independently of 2a/2b/2e
+- Post-launch category additions require an ADR (deliberate friction against taxonomy bloat)
