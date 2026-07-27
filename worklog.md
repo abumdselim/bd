@@ -39,3 +39,22 @@ Stage Summary:
 - Rollback runbook ready for operational use
 - T8 mitigation tracking: DNSSEC documented, implementation is manual (developer action in dashboards)
 - Both Phase 1a and 1b now pushed to https://github.com/abumdselim/bd
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: Phase 1c — Service Accounts
+
+Work Log:
+- Created `docs/adr/0005-service-accounts.md` with: 7-service registry table (Cloudflare, Supabase, Vercel, Upstash, Resend, Sentry, UptimeRobot), all with 2FA=Yes, owner email selimabmd@gmail.com, UptimeRobot 1-minute interval mismatch explicitly flagged for Phase 10d
+- Created `docs/free-tier-budget.md` with: 7 rows, exact limits from spec, consumed=0 for all, last-updated phase column, update procedure, known limitations section
+- Created `.env.example` with: 8 placeholder variables grouped by service (Supabase 3, Upstash 2, Resend 1, Sentry 2), all blank — no real or realistic-looking fake keys
+- Created `.gitignore` with `.env` and variants excluded
+- Verified: no secrets in git history, .env gitignored, 7 service rows, 7 consumed=0 rows, UptimeRobot 1-minute flag present, no sk_/eyJ patterns in .env.example
+- Committed as `3c38e69` and pushed to GitHub
+
+Stage Summary:
+- Phase 1c deliverables committed and pushed to `main`
+- Free tier budget established as baseline — every future phase decrements against these numbers
+- UptimeRobot 5-min vs 1-min decision documented and deferred to Phase 10d
+- All three phases (1a, 1b, 1c) pushed to https://github.com/abumdselim/bd
