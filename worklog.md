@@ -393,3 +393,43 @@ Stage Summary:
 - search_articles() is ready for Phase 6g's /search page
 - Bangla search is token-based (not stem-aware) — documented as an acceptable launch limitation
 - Part 2 total: 10 migrations (0001–0010), 21 ADRs (0012–0021), 25 RLS policies, 7 tables
+---
+Task ID: 3a
+Agent: Main Agent
+Task: Phase 3a — Supabase Auth Hardening
+
+Work Log:
+- Cloned repo to /home/z/bd, configured git user.name=abumdselim, user.email=selimabmd@gmail.com
+- Created supabase/config.toml with auth settings: site_url, redirect_urls, jwt_expiry=3600, enable_confirmations, double_confirm_changes, otp_expiry=1800, SMTP via Resend (smtp.resend.com:465), MFA TOTP enroll enabled
+- Created 3 branded email templates in supabase/templates/: confirmation.html, recovery.html, email_change.html (inline CSS, 480px, #1a1a2e/#e63946, Supabase template variables)
+- Updated .env.example with NEXT_PUBLIC_SITE_URL
+- Created docs/adr/0022-auth-config.md (ADR documenting all auth config decisions, HIBP Pro-plan limitation, rollback plan)
+- Created docs/runbooks/auth-config-rollback.md (operational runbook for SMTP rollback/re-apply, verification commands)
+- Configured Supabase Dashboard via Management API (sbp_ PAT):
+  - site_url = https://bengaldesk.com
+  - uri_allow_list = bengaldesk.com/auth/callback, localhost:3000/auth/callback
+  - jwt_exp = 3600, mailer_otp_exp = 1800
+  - SMTP: smtp.resend.com:465, user=resend, pass=Resend API key, sender=BengalDesk, admin=no-reply@bengaldesk.com
+  - password_min_length = 10, password_required_characters = lowercase:uppercase:digits
+  - mailer_autoconfirm = false, mailer_secure_email_change_enabled = true
+  - security_refresh_token_reuse_interval = 10
+  - mfa_totp_enroll_enabled = true
+  - Uploaded 3 branded email templates (confirmation, recovery, email_change) and enabled them
+- HIBP (password_hibp_enabled) BLOCKED — Pro plan feature only. Documented in ADR.
+- Ran verification checklist:
+  [PASS] Weak password "abc" → 422 weak_password (length + characters)
+  [PASS] 9-char password → 422 weak_password (length)
+  [PASS] Missing uppercase → 422 weak_password (characters)
+  [PASS] Missing digit → 422 weak_password (characters)
+  [PASS] Valid strong password → 201 user created, confirmation email sent via Resend
+  [PASS] Redirect allowlist → unlisted URL silently stripped (secure fallback)
+- Cleaned up all test users (0 users remain)
+
+Stage Summary:
+- All Phase 3a deliverables created: config.toml, 3 email templates, ADR, .env.example update, runbook
+- Supabase Dashboard fully configured via Management API (13 settings)
+- 3 branded email templates uploaded and enabled in production
+- Password policy enforced: min 10 chars, lowercase + uppercase + digits required
+- SMTP relay through Resend active
+- HIBP blocked on free tier — documented, upgrade path noted
+- Verification: 6/6 checks passed

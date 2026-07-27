@@ -1,0 +1,31 @@
+# Supabase Auth configuration — source of truth for local/CI parity
+# Production Dashboard is the authoritative source; this file MUST stay in sync.
+# See docs/adr/0022-auth-config.md for every value's rationale.
+
+[auth]
+site_url = "https://bengaldesk.com"
+additional_redirect_urls = [
+  "https://bengaldesk.com/auth/callback",
+  "http://localhost:3000/auth/callback"
+]
+jwt_expiry = 3600
+enable_confirmations = true
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+max_frequency = "60s"
+otp_expiry = 1800
+
+[auth.email.smtp]
+enabled = true
+host = "smtp.resend.com"
+port = 465
+user = "resend"
+# Password is set via Supabase Dashboard secret (Settings → Auth → SMTP).
+# NEVER commit the SMTP password to this file.
+sender_name = "BengalDesk"
+admin_email = "no-reply@bengaldesk.com"
+
+[auth.mfa.totp]
+enroll_enabled = true
