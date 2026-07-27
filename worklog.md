@@ -311,3 +311,19 @@ Stage Summary:
 - media table: generic (reused for avatars), accessibility-by-construction via NOT NULL alt_text
 - Depends on profiles (2b) — must deploy after 0002_profiles.sql
 - Supabase Storage bucket 'article-images' must be created manually in dashboard (documented in ADR 0016)
+
+---
+Task ID: 16
+Agent: Main Agent
+Task: Phase 2f — Audit Logs Table (Supabase Migration)
+
+Work Log:
+- Created `supabase/migrations/0006_audit_logs.sql`: audit_logs table (7 columns), actor_id nullable (system-initiated actions), action/entity_type as free-text (not enum), 3 indexes (actor, entity composite, created_at DESC), RLS enabled with zero policies, REVOKE DELETE from anon/authenticated/service_role
+- Created `docs/adr/0017-audit-immutability.md`: RLS-vs-grant-level comparison table, why service_role bypasses RLS, exact REVOKE statements, why only DELETE not UPDATE, text-vs-enum rationale for action/entity_type, nullable actor_id rationale
+- CRITICAL VERIFICATION: confirmed REVOKE DELETE ON audit_logs FROM service_role present verbatim, no REVOKE UPDATE/INSERT, action/entity_type are text not enum, actor_id is nullable
+
+Stage Summary:
+- Phase 2f deliverables created
+- audit_logs: append-only, structurally immutable at Postgres grant level
+- Even a compromised service-role key cannot delete audit rows
+- Depends on profiles (2b) — must deploy after 0002_profiles.sql
