@@ -295,3 +295,19 @@ Stage Summary:
 - Denormalized usage_count avoids COUNT(*) aggregate on every tag-page read
 - Composite PK prevents duplicate tag-attachments without extra unique constraint
 - Depends on articles (2a) — must deploy after 0001_articles.sql
+
+---
+Task ID: 15
+Agent: Main Agent
+Task: Phase 2e — Media Table (Supabase Migration)
+
+Work Log:
+- Created `supabase/migrations/0005_media.sql`: media table (10 columns), storage_path UNIQUE (not signed URL), mime_type CHECK allowlist (jpeg/png/webp), size_bytes <= 52428800 (exact 50 MiB), alt_text NOT NULL (accessibility-by-construction), exif_data jsonb, RLS enabled with zero policies
+- Created `docs/adr/0016-media-storage-strategy.md`: path-vs-signed-URL rationale, public bucket config (article-images), alt_text NOT NULL justification, compression audit query, no is_avatar column rationale
+- Verified: alt_text is NOT NULL at DB level, 52428800 exact binary megabyte, 3 MIME types, no is_avatar column, zero RLS policies
+
+Stage Summary:
+- Phase 2e deliverables created
+- media table: generic (reused for avatars), accessibility-by-construction via NOT NULL alt_text
+- Depends on profiles (2b) — must deploy after 0002_profiles.sql
+- Supabase Storage bucket 'article-images' must be created manually in dashboard (documented in ADR 0016)
