@@ -58,3 +58,30 @@ Stage Summary:
 - Free tier budget established as baseline — every future phase decrements against these numbers
 - UptimeRobot 5-min vs 1-min decision documented and deferred to Phase 10d
 - All three phases (1a, 1b, 1c) pushed to https://github.com/abumdselim/bd
+
+---
+Task ID: 4
+Agent: Main Agent
+Task: Phase 1d — Next.js 14.2.5 Scaffold
+
+Work Log:
+- Created `package.json` with exact pinned versions: next 14.2.5, react/react-dom 18.3.1, typescript 5.5.4, tailwindcss 3.4.7, zod 3.23.8, plus dev deps (postcss, autoprefixer, @types, eslint, class-variance-authority, clsx, tailwind-merge, lucide-react)
+- Created `tsconfig.json` with strict: true, noUncheckedIndexedAccess: true, @/* path alias
+- Created `tailwind.config.ts` with 15 color tokens (primary #1a1a2e, accent, surface, surface-alt, border, text-primary, text-secondary, text-muted, success, warning, danger, dark-bg, dark-surface, dark-border, dark-text), 6 breakpoints (xs:320px through 2xl:1536px), Bangla font stack
+- Created `components.json` (shadcn/ui neutral base theme), `postcss.config.js`, `next.config.js`
+- Created `app/layout.tsx` — single root layout with `<html lang="bn">` and `<body>`
+- Created `app/(public)/layout.tsx` + `page.tsx` — public surface, inherits lang="bn", homepage at /
+- Created `app/dashboard/layout.tsx` + `page.tsx` — dashboard surface at /dashboard, lang="en"
+- Created `app/admin/layout.tsx` + `page.tsx` — admin surface at /admin, lang="en"
+- Created `components/set-lang.tsx` — client component for html lang override (avoids duplicate <html> tags)
+- Created `lib/utils.ts` — cn() helper for shadcn/ui pattern
+- Created `docs/adr/0006-folder-structure.md` — route group decision, HTML lang strategy, folder tree
+- Installed deps with bun, ran `bun run build`: 0 type errors, 87kB first load JS (under 120kB budget)
+- Verified: strict mode, noUncheckedIndexedAccess, 15 color tokens, 6 breakpoints, 3 top-level route groups, exactly 1 `<html>` tag, no pages/ directory, tokens present in compiled CSS (as rgb() per Tailwind standard)
+- Committed as `e563e4e` and pushed to GitHub
+
+Stage Summary:
+- Phase 1d deliverables committed and pushed to `main`
+- Scaffold is the performance baseline: 87kB first load JS, all 3 routes statically generated
+- Route group separation ready for Phase 3e middleware gating
+- Phases 1a through 1d pushed to https://github.com/abumdselim/bd
