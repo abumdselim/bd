@@ -327,3 +327,22 @@ Stage Summary:
 - audit_logs: append-only, structurally immutable at Postgres grant level
 - Even a compromised service-role key cannot delete audit rows
 - Depends on profiles (2b) — must deploy after 0002_profiles.sql
+
+---
+Task ID: 17
+Agent: Main Agent
+Task: Phase 2g — RLS: Articles Table
+
+Work Log:
+- Created `docs/adr/0018-articles-rls-matrix.md`: 5-role × 4-operation access matrix table, per-role reasoning paragraphs, published-article immutability rationale
+- Created `supabase/migrations/0007_rls_articles.sql`: 8 separate named policies (3 SELECT, 1 INSERT, 2 UPDATE, 2 DELETE)
+- Manual line-by-line trace of all 8 policies against ADR 0018 matrix — all cells match
+- WITH CHECK verified present on both UPDATE policies and the INSERT policy
+- INSERT forces status = 'draft' → self-publishing structurally impossible
+- UPDATE own USING excludes 'published' and 'scheduled' → post-publish corrections require editor
+- No TO public clause; no mega-policies; all staff subqueries reference auth.uid()
+
+Stage Summary:
+- Phase 2g deliverables created — T2 (unauthorized article manipulation) fully mitigated for articles table
+- 8 policies: 3 SELECT (published, own, staff), 1 INSERT (own draft), 2 UPDATE (own editable, staff all), 2 DELETE (own draft, super_admin all)
+- Depends on articles (2a) and profiles (2b) — must deploy after both
