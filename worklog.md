@@ -158,3 +158,26 @@ Stage Summary:
 - securityheaders.com manual verification deferred to deployed preview URL
 - Cloudflare Transform Rules must mirror these headers (external config, documented in ADR 0008)
 - Phases 1a through 1g pushed to https://github.com/abumdselim/bd
+
+---
+Task ID: 8
+Agent: Main Agent
+Task: Phase 1h — Cloudflare WAF
+
+Work Log:
+- Created docs/adr/0009-waf-rules.md with 3 WAF rules:
+  Rule 1: Admin Bot Challenge (cf.bot_management.score lt 30 → Managed Challenge)
+  Rule 2: Dashboard Bot Challenge (cf.bot_management.score lt 30 → Managed Challenge)
+  Rule 3: Admin/Dashboard Rate Limit (30 req/min per IP → Block 10 min)
+- Bot score threshold documented as tunable (Phase 10f revisits with real traffic data)
+- Free tier headroom: 3 of 5 custom rules used, 2 remaining
+- Country blocking explicitly excluded (deferred to Part 10)
+- Created docs/runbooks/waf-false-positive.md: 5-step diagnosis runbook with incident log
+- Verified: correct Cloudflare expression syntax, no country blocking, T6 referenced 4 times, public routes unaffected
+- Committed as `e3a1254` and pushed to GitHub
+
+Stage Summary:
+- Phase 1h deliverables committed and pushed to `main`
+- T6 mitigation active at edge before any real admin credentials exist
+- WAF rules documented for manual Cloudflare dashboard configuration by developer
+- Phases 1a through 1h pushed to https://github.com/abumdselim/bd
