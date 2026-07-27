@@ -20,3 +20,22 @@ Stage Summary:
 - All 6 Phase 1a deliverables created and verified
 - Git commit ready locally at `/home/z/bd/` — user must push manually or provide auth token
 - No application code produced (documentation-only phase, as required)
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Phase 1b — Domain + Cloudflare
+
+Work Log:
+- Pushed Phase 1a commit (c019fc9) to GitHub using user-provided PAT
+- Created `docs/adr/0004-dns-records.md` with: 5-record DNS table (A, CNAME www, TXT SPF, CNAME DKIM, TXT DMARC), Cloudflare config (SSL Full Strict, HSTS max-age=31536000, DNSSEC two-step), email authentication summary with p=quarantine rationale
+- Created `docs/runbooks/dns-rollback.md` with: propagation diagnostic steps, single-record revert via Cloudflare API (Authorization: Bearer $CLOUDFLARE_API_TOKEN), correct API path (api.cloudflare.com/client/v4/zones/{zone_id}/dns_records/{id}), emergency unproxy bypass, full decision tree, post-rollback checklist, incident log table
+- Verified: 5 frontmatter fields in ADR 0004 (no extras), 5 DNS table rows, p=quarantine (not p=reject), Bearer token with env var, correct API path, unproxy/grey-cloud in runbook
+- Committed as `e348a2a` and pushed to GitHub
+
+Stage Summary:
+- Phase 1b deliverables committed and pushed to `main`
+- DNS records documented as source of truth in ADR 0004
+- Rollback runbook ready for operational use
+- T8 mitigation tracking: DNSSEC documented, implementation is manual (developer action in dashboards)
+- Both Phase 1a and 1b now pushed to https://github.com/abumdselim/bd
