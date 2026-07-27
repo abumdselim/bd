@@ -346,3 +346,19 @@ Stage Summary:
 - Phase 2g deliverables created — T2 (unauthorized article manipulation) fully mitigated for articles table
 - 8 policies: 3 SELECT (published, own, staff), 1 INSERT (own draft), 2 UPDATE (own editable, staff all), 2 DELETE (own draft, super_admin all)
 - Depends on articles (2a) and profiles (2b) — must deploy after both
+
+---
+Task ID: 18
+Agent: Main Agent
+Task: Phase 2h — RLS: Profiles + Roles
+
+Work Log:
+- Created `supabase/migrations/0008_rls_profiles.sql`: 5 policies (3 SELECT, 2 UPDATE), zero INSERT/DELETE policies
+- Created `docs/adr/0019-profiles-rls-matrix.md`: access matrix, role-column lock mechanism explanation (NEW.role vs subquery committed role), why subquery not trigger, why not OLD.role
+- CRITICAL VERIFICATION: role-lock is `role = (SELECT role FROM profiles WHERE id = auth.uid())` — subquery reads committed row, NOT a tautology (role = role)
+- Verified: zero INSERT/DELETE policies, zero triggers, WITH CHECK present on both UPDATE policies
+
+Stage Summary:
+- Phase 2h deliverables created — Section G self-escalation update path closed at DB level
+- Combined with Phase 2b (creation path locked), there is now NO path for role self-escalation
+- Role-lock mechanism: RLS WITH CHECK rejects (0 rows), not silently overwrites
