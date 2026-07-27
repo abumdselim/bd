@@ -377,3 +377,19 @@ Stage Summary:
 - Phase 2i deliverables created — Part 2 RLS is now fully complete across ALL tables
 - Zero tables remain in deny-by-default-with-no-policies state
 - Total RLS policies across Part 2: 8 (articles) + 5 (profiles) + 12 (remaining) = 25 policies
+
+---
+Task ID: 20
+Agent: Main Agent
+Task: Phase 2j — Full-Text Search
+
+Work Log:
+- Created `supabase/migrations/0010_search.sql`: unaccent extension, search_vector GENERATED STORED column (title weight A, excerpt weight B), GIN index, search_articles() function (STABLE, SECURITY INVOKER, websearch_to_tsquery, hardcoded status = 'published')
+- Created `docs/adr/0021-bangla-search-approach.md`: why 'simple' not 'english', token-based limitation (no stemming), websearch_to_tsquery vs alternatives, unaccent effect on Bangla, generated column rationale
+- Verified: 'simple' config (no 'english'), websearch_to_tsquery (not plainto_tsquery), GENERATED ALWAYS STORED (not trigger), GIN index, setweight A/B, STABLE, no SECURITY DEFINER
+
+Stage Summary:
+- Phase 2j deliverables created — Part 2 is now COMPLETE
+- search_articles() is ready for Phase 6g's /search page
+- Bangla search is token-based (not stem-aware) — documented as an acceptable launch limitation
+- Part 2 total: 10 migrations (0001–0010), 21 ADRs (0012–0021), 25 RLS policies, 7 tables
